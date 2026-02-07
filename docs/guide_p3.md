@@ -1,231 +1,171 @@
-# Part 3: Admin Terminal Investigation
+# Part 3: BLE Admin Terminal Investigation
 
-You've gained access to the admin terminal. Now find the impostors!
+In this exercise, you will interact with an ESP32-based Admin Terminal using Bluetooth Low Energy (BLE).
 
----
+The terminal exposes multiple BLE characteristics. Some of these contain information related to crew activity. Some of this information counts as valid evidence.
 
-## The Situation
+Your task is to extract evidence and submit correct answers.
 
-The admin terminal contains crew member files.
-
-Hidden in these files are **10 pieces of evidence** pointing to suspicious behavior.
-
-You need **7 pieces of evidence** to positively identify the impostors.
+You must submit **at least 7 correct pieces of evidence** to complete this part.
 
 ---
 
-## What is BLE?
+## Required Tools (Linux)
 
-BLE (Bluetooth Low Energy) is how the admin terminal stores data.
+Install the required Bluetooth utilities:
 
-Think of it like a filing cabinet with 10 drawers (characteristics).
-
-Each drawer might contain evidence.
-
----
-
-## Tools Setup
 ```bash
-sudo apt-get install bluetooth bluez bluez-tools
+sudo apt update
+sudo apt install bluetooth bluez bluez-tools
 ```
 
 ---
 
-## Step 1: Flash Admin Terminal Firmware
+## Step 1: Flash the Firmware
 
-Upload `ble_ctf.ino` to your ESP32.
+You are provided with a compiled firmware binary file (ble.ino.merged.bin). [LINK](https://github.com/The-Bread-Omelette/uploads.git)
 
-**Must be ESP32** (ESP8266 doesn't have Bluetooth).
+Flash the firmware onto the ESP32 using:
+
+```bash
+py -m esptool --chip esp32 --port COM16 --baud 460800 write_flash -z 0x0 ble.ino.merged.bin
+
+```
+
+After flashing completes, reset the ESP32.
 
 ---
 
-## Step 2: Scan for Terminal
+## Step 2: Scan for BLE Devices
+
+Scan for nearby BLE devices:
+
 ```bash
 sudo hcitool lescan
 ```
 
-Look for: **ADMIN_TERMINAL**
+Look for a device named:
 
-Example output:
 ```
-AA:BB:CC:DD:EE:FF ADMIN_TERMINAL
+ADMIN_TERMINAL
 ```
 
-Copy the MAC address. Press Ctrl+C to stop.
+Note the MAC address and stop scanning using `Ctrl+C`.
 
 ---
 
-## Step 3: Connect
+## Step 3: Connect to the Device
+
+Start an interactive BLE session:
+
 ```bash
-gatttool -b AA:BB:CC:DD:EE:FF -I
+gatttool -b <MAC_ADDRESS> -I
 ```
 
 At the prompt, type:
+
 ```
 connect
 ```
 
-Should see: `Connection successful`
+You should see:
+
+```
+Connection successful
+```
 
 ---
 
-## Step 4: List All Files
-```
+## Step 4: List Available Characteristics
+
+List all BLE characteristics exposed by the device:
+
+```text
 characteristics
 ```
 
-You'll see crew file handles:
-```
-handle: 0x0003, uuid: 00000001-...  ← Evidence counter
-handle: 0x0005, uuid: 00000002-...  ← Submit evidence here
-handle: 0x0007, uuid: 00000003-...  ← Crew file 1
-handle: 0x0009, uuid: 00000004-...  ← Crew file 2
-...
-```
+You will see multiple handles, including:
+- an evidence counter
+- an answer submission characteristic
+- several crew file characteristics
+
+Each crew file may contain relevant information.
 
 ---
 
 ## Step 5: Read Crew Files
 
-Read each file:
-```
+Read a crew file using its handle:
+
+```text
 char-read-hnd 0x0007
 ```
 
-Output (hex):
-```
-4372 6577 206d 656d 6265 7220 4a6f 686e
+The output will be in hexadecimal format.
+
+Example:
+
+```text
+43726577206d656d626572204a6f686e
 ```
 
 ---
 
-## Step 6: Decode Evidence
+## Step 6: Decode Hexadecimal Output
 
-Convert hex to text:
+Convert hexadecimal output to readable text:
+
 ```bash
-echo "4372657720..." | xxd -r -p
+echo "43726577206d656d626572204a6f686e" | xxd -r -p
 ```
 
-Might reveal: `Crew member John was seen in electrical`
+---
 
-Or use online converter: https://www.rapidtables.com/convert/number/hex-to-ascii.html
+## Step 7: Answer the Questions
+
+A separate question sheet will be provided by the instructor.
+
+Match the decoded evidence to the questions and determine the correct answers.
 
 ---
 
-## Step 7: Answer Questions
+## Step 8: Submit an Answer
 
-Your instructor gave you a question sheet like:
+Convert your answer to hexadecimal:
 
-**Q1: Who was last seen in electrical before the blackout?**
-
-If you find evidence pointing to "JOHN", that's your answer.
-
----
-
-## Step 8: Submit Evidence
-
-Convert answer to hex:
 ```bash
-echo -n "JOHN" | xxd -ps
+echo -n "ANSWER_TEXT" | xxd -ps
 ```
 
-Output: `4a4f484e`
+Submit the answer:
 
-Submit:
-```
-char-write-req 0x0005 4a4f484e
+```text
+char-write-req 0x0005 HEX_VALUE
 ```
 
 ---
 
 ## Step 9: Check Progress
-```
+
+Read the evidence counter:
+
+```text
 char-read-hnd 0x0003
 ```
 
-Decode to see: `Evidence: 1/10`
+Decode the value to check how many correct submissions you have made.
 
 ---
 
-## Investigation Strategy
+## Completion Condition
 
-1. Read ALL crew files (handles 0x0007, 0x0009, 0x000b, etc.)
-2. Decode each one
-3. Match evidence to questions
-4. Submit answers
-5. Repeat until 7/10 found
+Once at least **7 correct pieces of evidence** have been submitted, the terminal will indicate successful completion on the serial output.
 
 ---
 
-## Quick Commands
+## Notes
 
-**Scan:**
-```bash
-sudo hcitool lescan
-```
-
-**Connect:**
-```bash
-gatttool -b MAC -I
-connect
-```
-
-**List files:**
-```
-characteristics
-```
-
-**Read:**
-```
-char-read-hnd 0x0007
-```
-
-**Submit:**
-```
-char-write-req 0x0005 HEX_ANSWER
-```
-
-**Check score:**
-```
-char-read-hnd 0x0003
-```
-
----
-
-## Hex Conversion
-
-**Text → Hex:**
-```bash
-echo -n "TEXT" | xxd -ps
-```
-
-**Hex → Text:**
-```bash
-echo "48656c6c6f" | xxd -r -p
-```
-
----
-
-## Tips
-
-- Some evidence is plain text
-- Some is hex-encoded (decode it!)
-- Some might be hidden in descriptors (check!)
-- Read everything carefully
-- Keep notes on what you find
-
----
-
-## Winning
-
-After submitting 7 correct pieces of evidence:
-
-ESP32 Serial Monitor shows:
-```
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-IMPOSTORS IDENTIFIED!
-CREWMATES WIN!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-```
-
-Show this to your instructor - you've completed the challenge! 🎉
+- Firmware dumping is allowed but will not reveal answers
+- Not all crew files contain valid evidence
+- Carefully read and decode all accessible data
+- The intended solution path is BLE interaction
