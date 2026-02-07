@@ -7,6 +7,7 @@
 
 const char* WIFI_SSID = "POCO";
 const char* WIFI_PASSWORD = "something.";
+const char* xxx="REFER TO THIS DOC https://hackmd.io/@1eN0qJn8Qn6xmZ0Zo04jZw/H1MTuuVvWg"
 
 // SABOTAGE: Wrong server address
 const char* SERVER_HOST = "10.217.244.117";  // Change to YOUR actual IP
@@ -18,25 +19,25 @@ const char* SECRET_KEY = "IMPOSTOR_FAKE_KEY";
 
 unsigned long lastHeartbeat = 0;
 
-const char* root_ca =  \
+const char* root_ca = \
 "-----BEGIN CERTIFICATE-----\n" \
-"MIIDCTCCAfGgAwIBAgIUOUQJey2lFTMkpzv5yYD9FZR+h64wDQYJKoZIhvcNAQEL\n" \
-"BQAwFDESMBAGA1UEAwwJbG9jYWxob3N0MB4XDTI2MDEyMjA5MTcxNloXDTI3MDEy\n" \
-"MjA5MTcxNlowFDESMBAGA1UEAwwJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEF\n" \
-"AAOCAQ8AMIIBCgKCAQEAvryM2lD0B3HZ+GPQaHIpUwQWuAA1CqSwCnTH3bU71z7l\n" \
-"M9ts0k9VNz50v7+tv1JgK+QU3YsT2TWIFsXryuLcyrwmBzk+n1QNCjrOUR3DZzdl\n" \
-"dKqmvC4qay6kPqz6oiaqnyV/dMhgjBi4usAPDqHLjiiXi4trlgOCydmie5+ya5Sa\n" \
-"EvT7qmeZ1YFNrNZgBlOJ3hh6CBA6mXDq3kqS4d/9eerKmZ89ZtC6F4JDDd8gRDXk\n" \
-"vr/g+fGswklOpSjlhxyFOjHATKVXyMwAswJKuRSdP+abowo3yezVFRjszElJMMvW\n" \
-"VLe47Iixpb7TNSU8MqksSFGdGOtu8gGWMyL9Qlyb5wIDAQABo1MwUTAdBgNVHQ4E\n" \
-"FgQUJLNHoe05KPwnEpMeqS3S3NG8cnswHwYDVR0jBBgwFoAUJLNHoe05KPwnEpMe\n" \
-"qS3S3NG8cnswDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAVPiw\n" \
-"uF9VQreM54cxyhkJEAhTV1sJXRxtV7lV/iyYX6tkVdiczH6yPpvb+QF6JMmsc9K/\n" \
-"Q3rEaCT2LFfRHnef3rqD0232p3xw0LVerTyPNvH9iYSjkzwJlBn47De0N2gI3m4U\n" \
-"b9Aqij3bELN+rcx08T9YS8HMIhWx3uHE2tEqLbzQdBctWChmqZNA7DUMOCxGuTNb\n" \
-"ETOoM6SfmdHXYHvCgubkRDzuKbQZAn3dCm80aB7GH5Thnhb+hyFahjWYK+ZiyyHG\n" \
-"4NMBSdNGuSzhAKobNwOmR9vG5KzCrRgZD4YbzrKFT3jOJtViL48U/y/NXnuBRbFW\n" \
-"kcIuuOF2a4WMABezkw==\n" \
+"MIIDEzCCAfugAwIBAgIUXEh8C5mriQirxDXHyg5NIijBz+8wDQYJKoZIhvcNAQEL\n" \
+"BQAwGTEXMBUGA1UEAwwOMTAuMjE3LjI0NC4xMTcwHhcNMjYwMjA3MDgyNjM0WhcN\n" \
+"MzYwMjA1MDgyNjM1WjAZMRcwFQYDVQQDDA4xMC4yMTcuMjQ0LjExNzCCASIwDQYJ\n" \
+"KoZIhvcNAQEBBQADggEPADCCAQoCggEBALeQcOcdFOcftge7edqKhM8ESMNzEmbE\n" \
+"vgZPf/j2mFIJJG+Ka78isd4c6heS0QRAoMZBfAK13XWRxFj5BgpOovp9eUYckTlG\n" \
+"b8OC+PYZURnGSeEdQhdCztzQUAOyXm0pixvcg636CZr8JdvExwXtaGUpF3zu9qKw\n" \
+"wSSlOHXnWgtzEH75mKUtzekydhvWrn6zvNVd98HL0a1F9IflZuD6WB73pM4s4uF+\n" \
+"O+RTh31taFSDwspBF6TqUbBYVqyYacINLBfehPhcQWm8udUx8yXmPXB9016ob8Rb\n" \
+"sVCiXSUpy4Q3SRyhrexw91CK5wcDvcCw7JKHbnobxkoBYJGcOWovvs0CAwEAAaNT\n" \
+"MFEwHQYDVR0OBBYEFBNYX40bVj1g9TgtTa7+4zkquRKKMB8GA1UdIwQYMBaAFBNY\n" \
+"X40bVj1g9TgtTa7+4zkquRKKMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL\n" \
+"BQADggEBADH+kOm5A+Cde5A0/flOgEsuG3jBqcjItjqxEd+TuXElaLVkdqncOYfi\n" \
+"QLHjFjKXm5eCvkBqn0BZG5euRuhFzHmsWHbONHpkSf+CaM4a9gzNG6ym+MNbKMZl\n" \
+"2Onm4EeKcR72ltNuw+2fXvL33AWXOR/ozfTJLklTC2j8ZnnaiAG6D3hVqxa6RGTI\n" \
+"5bzWk+0rAk4vIk7t0Sm98br0Pa299EC5fDN8pl1oS/garDbdNoDXFg2IYRU/QrvN\n" \
+"WXbeLm/40Cd/MGlYlNypMkj6JxTQEXUvlMFqJFEdEjKclYytYvHPUNLIVKSKEyti\n" \
+"UnWHT4f8QQJTjIYjPGAvla6+YhgF9Mo=\n" \
 "-----END CERTIFICATE-----\n";
 
 
