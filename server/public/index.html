@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin System Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-left">
+                <h1>Admin System Status</h1>
+                <p class="subtitle">Among Us CTF - Sabotage Detection</p>
+            </div>
+            <div class="header-right">
+                <div class="status-badge">
+                    <span class="status-dot" id="connectionDot"></span>
+                    <span id="connectionStatus">CONNECTING</span>
+                </div>
+                <div class="device-count">
+                    <span id="deviceCount">0</span> systems
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-grid" id="adminGrid">
+            <!-- Admin cards here -->
+        </main>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
